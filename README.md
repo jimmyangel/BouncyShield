@@ -1,5 +1,7 @@
 ## A silly game for the Arduino Uno
 
+Using the joystick up/down, try to stop the shooting leds coming from the left side. Push the joystick to freeze the game.
+
 **Wowki Diagram**
 
 ![Diagram](https://morinricardo.com/images/uploads/bouncyshield-1.png)

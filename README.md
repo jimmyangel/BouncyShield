@@ -5,3 +5,7 @@ Using the joystick up/down, try to stop the shooting leds coming from the left s
 **Wokwi Diagram**
 
 ![Diagram](https://morinricardo.com/images/uploads/bouncyshield-1.png)
+
+** Final product **
+
+![Bouncy Shield](https://morinricardo.com/images/uploads/bouncyshield-2.jpg)

@@ -1,5 +1,6 @@
 #include <LiquidCrystal_I2C.h>
 #include <LedControl.h>
+#include <EEPROM.h>
 #include <ezBuzzer.h>
 #include "melody.h"
 
@@ -17,6 +18,8 @@ ezBuzzer buzzer(8, BUZZER_TYPE_PASSIVE, HIGH);
 long ledDelay = 500;
 
 // Game state
+byte scoreCount = 0;
+byte highScore = 0;
 long gameTimeOut = 60000;
 long gameTimer = 0;
 bool isRunning = true;
@@ -34,8 +37,6 @@ long shooterTimer = 0;
 int stopperRow = 4;
 int stopperCol = 7;
 bool stopperLed = true;
-
-long scoreCount = 0;
 
 // Joystick reader state
 int stick = 0;
@@ -63,6 +64,8 @@ void setup() {
   lc.clearDisplay(0);
 
   lc.setLed(0, 4, 7,true);
+
+  checkHighScoreInit();
 }
 
 int i = 0;
@@ -263,10 +266,19 @@ void checkGameOver() {
     lcd.print("YOUR SCORE: ");
     lcd.print(scoreCount);
     lcd.setCursor(0, 1);
-    lcd.print("TRY AGAIN!!");
+    if (scoreCount > highScore) {
+      int length = sizeof(winNoteDurations) / sizeof(int);
+      buzzer.playMelody(winMelody, winNoteDurations, length);
+      highScore = scoreCount;
+      storeHighScore();
+      lcd.print("NEW HIGH SCORE!!");
 
-    int length = sizeof(noteDurations) / sizeof(int);
-    buzzer.playMelody(melody, noteDurations, length);
+    } else {
+      int length = sizeof(noteDurations) / sizeof(int);
+      buzzer.playMelody(melody, noteDurations, length);
+      lcd.print("HIGH SCORE: ");
+      lcd.print(highScore);
+    }
 
     scoreCount = 0;
     startPause();
@@ -292,10 +304,11 @@ void checkPause() {
 void printScore() {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("YOUR SCORE IS:");
+  lcd.print("Your score: ");
   lcd.print(scoreCount);
   lcd.setCursor(0, 1);
-  lcd.print("Keep going!!    ");
+  lcd.print("High score: ");
+  lcd.print(highScore);
 }
 
 void printWelcome() {
@@ -307,3 +320,24 @@ void printWelcome() {
   lcd.print("BOUNCY SHIELD!!!");
 }
 
+bool checkHighScoreInit() {
+  int addr_I = EEPROM.length() - 2;
+  int addr_N = EEPROM.length() - 1;
+
+  if (EEPROM.read(addr_I) == 'I' && EEPROM.read(addr_N) == 'N') {
+    highScore = EEPROM.read(0);
+    return false; 
+  } else {
+    highScore = 0;
+    EEPROM.update(0, highScore);
+    
+    // Write the "IN" signature
+    EEPROM.update(addr_I, 'I');
+    EEPROM.update(addr_N, 'N');
+    return true; 
+  }
+}
+
+void storeHighScore() {
+  EEPROM.update(0, highScore);
+}

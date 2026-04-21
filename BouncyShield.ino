@@ -94,9 +94,6 @@ void ledBlinker() {
     ledon = !ledon;
     if (ledon) {
       digitalWrite(MY_LED, HIGH);
-      //lc.setLed(0,row,col,false);
-
-      //row = random(8);
     } else {
      digitalWrite(MY_LED, LOW); 
     }
@@ -168,7 +165,6 @@ void shooter() {
 
     if (stopperRow == shooterRow && stopperCol == shooterCol ) {
       scored = true;
-      //score = true;
     } else {
       if (shooterCol == 7) {
         buzzer.beep(100, 0, 80);

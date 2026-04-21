@@ -18,8 +18,8 @@ ezBuzzer buzzer(8, BUZZER_TYPE_PASSIVE, HIGH);
 long ledDelay = 500;
 
 // Game state
-byte scoreCount = 0;
-byte highScore = 0;
+int scoreCount = 0;
+int highScore = 0;
 long gameTimeOut = 60000;
 long gameTimer = 0;
 bool isRunning = true;

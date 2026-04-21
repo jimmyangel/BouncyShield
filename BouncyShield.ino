@@ -64,7 +64,6 @@ void setup() {
   checkHighScoreInit();
 }
 
-int i = 0;
 // the loop function runs over and over again forever
 int col = random (8);
 void loop() {
@@ -108,8 +107,6 @@ void joystickReader() {
   int xval = 0;
   int yval = 0;
 
-  static int prevStick = 0;
-
   xval = analogRead(X_PIN);
   yval = analogRead(Y_PIN);
 
@@ -125,32 +122,6 @@ void joystickReader() {
   }
   if (yval < 100) {
     stick = 2;
-  }
-
-  String stickLabel = "CENTER";
-
-  if (stick != prevStick) {
-    switch (stick) {
-      case 1:
-        stickLabel = "DOWN";
-        break;
-      case -1:
-        stickLabel = "UP";
-        break;
-      case 2:
-        stickLabel = "LEFT";
-        break;
-      case -2:
-        stickLabel = "RIGHT";
-        break;
-      default:
-        break;
-    }
-
-    if (stick != prevStick) {
-      Serial.println(stickLabel);
-      prevStick = stick;
-    }
   }
 }
 
@@ -177,7 +148,6 @@ void buttonReader() {
           ledDelay = 500;
           gameTimer = gameTimer + gameFrozenOffset;
         }
-        Serial.println(isFrozen);
       }
     }
   }
@@ -210,11 +180,6 @@ void shooter() {
         if (shooterDelay > 30) {
           shooterDelay = shooterDelay - 5;
         }
-        Serial.print("Score!!!!!!!!!!!!!!!!!!!!!!! ");
-        Serial.print(" Delay ");
-        Serial.print(shooterDelay);
-        Serial.print(" Score ");
-        Serial.println(scoreCount);
         buzzer.beep(100, 0, 1500);
         printScore();
         scored = false;
@@ -288,14 +253,12 @@ void checkGameOver() {
 }
 
 void startPause() {
-  Serial.println("Enter pause");
   pauseTimer = millis();
   isRunning = false;
 }
 
 void checkPause() {
   if ((millis() - pauseTimer) > PAUSE_TIMEOUT) {
-    Serial.println("Exit pause");
     pauseTimer = millis();
     isRunning = true;
     buzzer.stop();

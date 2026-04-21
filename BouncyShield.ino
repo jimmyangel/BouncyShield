@@ -14,41 +14,37 @@ ezBuzzer buzzer(8, BUZZER_TYPE_PASSIVE, HIGH);
 #define X_PIN 1
 #define Y_PIN 0
 
+// Game constants
+#define GAME_TIMEOUT 60000
+#define PAUSE_TIMEOUT 11000
+#define BUTTON_DELAY 100
+
+// Global state variables
+
 // Led state
 long ledDelay = 500;
 
 // Game state
 int scoreCount = 0;
 int highScore = 0;
-long gameTimeOut = 60000;
 long gameTimer = 0;
 bool isRunning = true;
-long pauseTimeOut = 11000;
 long pauseTimer = 0;
 
 // Shooter state
-int shooterRow = 0;
-int shooterCol = 0;
-bool shooterLed = false;
 long shooterDelay = 100;
-long shooterTimer = 0;
 
 // Stopper state
 int stopperRow = 4;
 int stopperCol = 7;
-bool stopperLed = true;
 
 // Joystick reader state
 int stick = 0;
 
-// Button reader state
-bool button = false;
-
 // Frozen state
 bool isFrozen = false;
-long gameFrozenOffset = 0;
 
-// the setup function runs once when you press reset or power the board
+// The setup function runs once when you press reset or power the board
 void setup() {
   pinMode(MY_LED, OUTPUT);
   pinMode(SW_PIN, INPUT); 
@@ -159,11 +155,11 @@ void joystickReader() {
 }
 
 void buttonReader() {
-  const long BUTTON_DELAY = 100;
-
+  static bool button = false;
   static long buttonTime;
   static int prevButton = true;
-  static bool  lastButton  = false;
+  static bool lastButton  = false;
+  static long gameFrozenOffset = 0;
 
   bool reading = !digitalRead(SW_PIN);
   if (reading !=  lastButton ) {
@@ -189,6 +185,12 @@ void buttonReader() {
 }
 
 void shooter() {
+
+  static int shooterRow = 0;
+  static int shooterCol = 0;
+  static bool shooterLed = false;
+  static long shooterTimer = 0;
+
   bool scored = false;
 
   if ((millis() - shooterTimer) > shooterDelay) {
@@ -257,7 +259,7 @@ void stopper() {
 }
 
 void checkGameOver() {
-  if ((millis() - gameTimer) > gameTimeOut) {
+  if ((millis() - gameTimer) > GAME_TIMEOUT) {
     gameTimer = millis();
     shooterDelay = 100;
 
@@ -292,7 +294,7 @@ void startPause() {
 }
 
 void checkPause() {
-  if ((millis() - pauseTimer) > pauseTimeOut) {
+  if ((millis() - pauseTimer) > PAUSE_TIMEOUT) {
     Serial.println("Exit pause");
     pauseTimer = millis();
     isRunning = true;

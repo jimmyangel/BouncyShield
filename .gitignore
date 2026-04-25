@@ -1,0 +1,20 @@
+# --- Arduino IDE Temps ---
+# Ignore the temporary build folder
+build/
+bin/
+
+# --- VS Code / IntelliSense ---
+.vscode
+
+# --- Compiled Files ---
+*.elf
+*.bin
+*.hex
+*.o
+*.d
+*.a
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
+
